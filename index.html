@@ -1,60 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+      integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+      crossorigin="anonymous"
+    />
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <title>Subscribe Form</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
-    crossorigin="anonymous">
-  <script src='https://www.google.com/recaptcha/api.js'></script>
-  <title>Subscribe Form</title>
-</head>
+  <body>
+    <div class="container">
+      <h1>Subscribe</h1>
+      <form id="subscribeForm">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" name="name" id="name" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="text" name="email" id="email" class="form-control" />
+        </div>
+        <div class="form-group">
+          <div
+            class="g-recaptcha"
+            data-sitekey="6LdpvDEUAAAAAMy8x0y8PS99j4BavfO2oBdVTQGZ"
+          ></div>
+        </div>
+        <input type="submit" value="Submit" class="btn btn-primary" />
+      </form>
+    </div>
 
-<body>
-  <div class="container">
-    <h1>Subscribe</h1>
-    <form id="subscribeForm">
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name" class="form-control">
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="text" name="email" id="email" class="form-control">
-      </div>
-      <div class="form-group">
-        <div class="g-recaptcha" data-sitekey="6LdpvDEUAAAAAMy8x0y8PS99j4BavfO2oBdVTQGZ"></div>
-      </div>
-      <input type="submit" value="Submit" class="btn btn-primary">
-    </form>
-  </div>
+    <script>
+      document.getElementById('subscribeForm').addEventListener('submit', e => {
+        e.preventDefault();
 
-  <script>
-    document.getElementById('subscribeForm').addEventListener('submit', submitForm);
+        const name = document.querySelector('#name').value;
+        const email = document.querySelector('#email').value;
+        const captcha = document.querySelector('#g-recaptcha-response').value;
 
-    function submitForm(e){
-      e.preventDefault();
-      
-      const name = document.querySelector('#name').value;
-      const email = document.querySelector('#email').value;
-      const captcha = document.querySelector('#g-recaptcha-response').value;
-
-      fetch('/subscribe', {
-        method:'POST',
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-type':'application/json'
-        },
-        body:JSON.stringify({name:name, email: email, captcha: captcha})
-      })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        alert(data.msg);
+        return fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({ name, email, captcha })
+        })
+          .then(res => res.json())
+          .then(data => {
+            console.log(data);
+            alert(data.msg);
+            if (data.success) return location.reload();
+          });
       });
-    }
-  </script>
-</body>
-
+    </script>
+  </body>
 </html>
